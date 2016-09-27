@@ -1,0 +1,41 @@
+= NHS Condition Crawler and Search
+
+Crawling http://www.nhs.uk/Conditions/* from the sitemap and provides json for elastic search
+
+= Installation
+
+Maven 3+
+Java 8
+
+Everything else is available from Maven Central Repo and Spring.IO
+
+= Running
+
+[source,Bash]
+---------------------------------------------------------------------
+mvn package spring-boot:run
+---------------------------------------------------------------------
+
+= Example Query
+
+Getting everying
+
+[source,Bash]
+---------------------------------------------------------------------
+curl -H "Content-Type: application/json" -X POST -d '{"query":{"match_all":{}}}' http://localhost:9200/nhs/conditions/_search
+---------------------------------------------------------------------
+
+Search "What is Cancer?"
+
+[source,Bash]
+---------------------------------------------------------------------
+curl -H "Content-Type: application/json" -X POST -d '{"query":{"match":{"content":"What is Cancer?"}}}' http://localhost:9200/nhs/conditions/_search
+---------------------------------------------------------------------
+
+Search "What is Cancer?" with title field boosting
+
+[source,Bash]
+---------------------------------------------------------------------
+curl -H "Content-Type: application/json" -X POST -d '{"query":{"multi_match" : { "query": "What is Cancer?", "fields": ["title^5", "content" ] }}}' http://localhost:9200/nhs/conditions/_search 
+---------------------------------------------------------------------
+
